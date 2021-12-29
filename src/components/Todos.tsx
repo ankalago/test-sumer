@@ -5,15 +5,21 @@ import { Todo } from '../entities/Todo';
 import { useUtils } from '../hooks/hookUtils';
 import { classNames } from '../utils/utils';
 import TodoItem from './TodoItem';
+import { useCustomQuery } from '../hooks/hookCustomQuery';
+import { getTodos } from '../services/services';
+import { IResponse } from '../interfaces/components';
 
 const Todos = (): JSX.Element => {
 
   const { todos, setTodos } = useStore();
   const [todo, setTodo] = useState<string>('')
   const [showError, setShowError] = useState<boolean>(false)
+  useCustomQuery<IResponse<Todo>>('getTodos', getTodos, {
+    onSuccess: ({ data }) => setTodos(data),
+  });
 
   const addTodo = () => {
-    const maxId = todos.length ? Math.max(...todos.map(i => i.id)) : 1
+    const maxId = todos.length ? Math.max(...todos.map(i => i._id)) : 1
     const itemsMapped = [...todos, new Todo(maxId + 1, todo)]
     !!todo && setTodos(itemsMapped)
     setTodo('')
@@ -62,9 +68,9 @@ const Todos = (): JSX.Element => {
           </button>
         </div>
         <ul role="list" className="divide-y divide-gray-200 space-y-3">
-          {todos.map((item) => (
-            <TodoItem todoItem={item} key={item.id} />
-          ))}
+          {todos.length ? todos.map((item) => (
+            <TodoItem todoItem={item} key={item._id} />
+          )) : 'cargando'}
         </ul>
       </div>
     </div>

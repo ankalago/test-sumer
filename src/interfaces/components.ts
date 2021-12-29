@@ -7,3 +7,9 @@ export interface IModal {
 export interface ITodoItem {
   todoItem: Todo
 }
+
+export interface IResponse<T> {
+  success?: boolean
+  count: number
+  data: T[]
+}
