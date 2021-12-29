@@ -1,29 +1,27 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
+import { IModal } from '../interfaces/components';
+import useStore from '../hooks/hookStore';
 
-const Modal = ({ isOpen, onOkAction, onCancelAction }: { isOpen: boolean, onOkAction: Function, onCancelAction: Function }): JSX.Element => {
+const Modal = ({ onOkAction }: IModal): JSX.Element => {
 
-  const [open, setOpen] = useState(false)
+  const { ui, setUi } = useStore();
+  const { modal: { show: showModal } } = ui
   const cancelButtonRef = useRef(null)
-
-  useEffect(() => {
-    setOpen(isOpen)
-  }, [isOpen])
 
   const onOk = () => {
     onOkAction()
-    setOpen(false)
+    setUi({ modal: { show: false } })
   }
 
   const onCancel = () => {
-    onCancelAction()
-    setOpen(false)
+    setUi({ modal: { show: false } })
   }
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={setOpen}>
+    <Transition.Root show={showModal} as={Fragment}>
+      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={onCancel}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
