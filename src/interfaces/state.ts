@@ -5,6 +5,7 @@ export interface IModal {
 }
 
 export interface IUi {
+  loading?: boolean
   modal: IModal
 }
 

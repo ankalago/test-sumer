@@ -1,12 +1,10 @@
-import Modal from './components/Modal';
-import useStore from './hooks/hookStore';
+import Alert from './components/Alert';
 import './App.scss';
 import Todos from './components/Todos';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Loading from './components/Loading';
 
 const App = (): JSX.Element => {
-
-  const { todos, setTodos, selectedTodo } = useStore();
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -16,14 +14,10 @@ const App = (): JSX.Element => {
     },
   });
 
-  const onRemoveConfirmation = () => {
-    const itemsMapped = todos.filter(i => i._id !== selectedTodo)
-    setTodos(itemsMapped)
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Modal onOkAction={onRemoveConfirmation} />
+      <Loading />
+      <Alert />
       <Todos />
     </QueryClientProvider>
   );

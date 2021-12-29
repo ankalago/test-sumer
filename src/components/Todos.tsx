@@ -5,25 +5,37 @@ import { Todo } from '../entities/Todo';
 import { useUtils } from '../hooks/hookUtils';
 import { classNames } from '../utils/utils';
 import TodoItem from './TodoItem';
-import { useCustomQuery } from '../hooks/hookCustomQuery';
-import { getTodos } from '../services/services';
-import { IResponse } from '../interfaces/components';
+import { useCustomMutation, useCustomQuery } from '../hooks/hookCustomQuery';
+import { addNewTodo, getTodos } from '../services/services';
+import { IResponseGet, IResponsePostPutDelete } from '../interfaces/components';
 
 const Todos = (): JSX.Element => {
 
-  const { todos, setTodos } = useStore();
+  const { todos, setTodos, setUi } = useStore();
   const [todo, setTodo] = useState<string>('')
   const [showError, setShowError] = useState<boolean>(false)
-  useCustomQuery<IResponse<Todo>>('getTodos', getTodos, {
+  const queryGetTodos = useCustomQuery<IResponseGet<Todo>>('getTodos', getTodos, {
     onSuccess: ({ data }) => setTodos(data),
   });
+  const useMutation = useCustomMutation<IResponsePostPutDelete<Todo>, Partial<Todo>>('addNewTodo', addNewTodo);
 
   const addTodo = () => {
-    const maxId = todos.length ? Math.max(...todos.map(i => i._id)) : 1
-    const itemsMapped = [...todos, new Todo(maxId + 1, todo)]
-    !!todo && setTodos(itemsMapped)
-    setTodo('')
-    setShowError(true)
+    if(!!todo){
+      setUi({ loading: true })
+      useMutation.mutate({
+        description: todo
+      }, {
+        onSuccess: (data) => {
+          if(data.success){
+            const itemsMapped = [...todos, new Todo(data.data._id, data.data.description)]
+            setTodos(itemsMapped)
+            setTodo('')
+            setShowError(true)
+            setUi({ loading: false })
+          }
+        }
+      })
+    }
   }
 
   useUtils(addTodo)
@@ -34,7 +46,10 @@ const Todos = (): JSX.Element => {
 
   useEffect(() => {
     setShowError(false)
-  }, [todo])
+    if(queryGetTodos.isSuccess) {
+      setUi({ loading: false })
+    }
+  }, [todo, queryGetTodos.isSuccess])
 
   return (
     <div className="bg-gray-100 py-8 h-screen">
@@ -70,7 +85,7 @@ const Todos = (): JSX.Element => {
         <ul role="list" className="divide-y divide-gray-200 space-y-3">
           {todos.length ? todos.map((item) => (
             <TodoItem todoItem={item} key={item._id} />
-          )) : 'cargando'}
+          )) : ''}
         </ul>
       </div>
     </div>

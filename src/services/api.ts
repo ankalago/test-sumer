@@ -28,6 +28,11 @@ export async function apiPut<T, U>(url: string, body: U, options?: T) {
   return data;
 }
 
+export async function apiDelete<T>(url: string, options?: T) {
+  const { data } = await axiosApiInstance.delete(url, options);
+  return data;
+}
+
 export async function apiPost<T, U>(url: string, body: U, options?: T) {
   const { data } = await axiosApiInstance.post(url, body, options);
   return data;

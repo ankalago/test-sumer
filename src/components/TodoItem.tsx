@@ -2,7 +2,7 @@ import { Switch } from '@headlessui/react';
 import { XIcon as XIconSolid } from '@heroicons/react/solid';
 import useStore from '../hooks/hookStore';
 import { classNames } from '../utils/utils';
-import { IResponse, ITodoItem } from '../interfaces/components';
+import { IResponsePostPutDelete, ITodoItem } from '../interfaces/components';
 import { updateTodo } from '../services/services';
 import { useCustomMutation } from '../hooks/hookCustomQuery';
 import { Todo } from '../entities/Todo';
@@ -10,10 +10,11 @@ import { Todo } from '../entities/Todo';
 const TodoItem = ({ todoItem }: ITodoItem): JSX.Element => {
 
   const { todos, setTodos, setUi, setSelectedTodo } = useStore();
-  const userMutation = useCustomMutation<IResponse<Todo>, Partial<Todo>>('updateComplete', updateTodo);
+  const userUpdateMutation = useCustomMutation<IResponsePostPutDelete<Todo>, Partial<Todo>>('updateComplete', updateTodo);
 
   const toggleStatus = (id: number, status: boolean) => {
-    userMutation.mutate({
+    setUi({ loading: true })
+    userUpdateMutation.mutate({
       _id: id,
       completed: status
     }, {
@@ -21,6 +22,7 @@ const TodoItem = ({ todoItem }: ITodoItem): JSX.Element => {
         if (data.success) {
           const itemsMapped = todos.map((i => ({ ...i, completed: i._id === id ? status : i.completed })))
           setTodos(itemsMapped)
+          setUi({ loading: false })
         }
       }
     })

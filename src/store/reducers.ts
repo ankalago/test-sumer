@@ -4,7 +4,7 @@ import { IState, IUi } from '../interfaces/state';
 import { Todo } from '../entities/Todo';
 
 export const reducers = (set: SetState<Store>): Reducers => ({
-  setUi: (ui: IUi) =>
+  setUi: (ui: Partial<IUi>) =>
     set((state: IState) => ({
       ui: {
         ...state.ui,

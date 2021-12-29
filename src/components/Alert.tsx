@@ -1,18 +1,32 @@
 import React, { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
-import { IModal } from '../interfaces/components';
+import { ExclamationIcon, RefreshIcon as RefreshIconOutline } from '@heroicons/react/outline'
+import { IResponsePostPutDelete } from '../interfaces/components';
 import useStore from '../hooks/hookStore';
+import { useCustomMutation } from '../hooks/hookCustomQuery';
+import { Todo } from '../entities/Todo';
+import { deleteTodo } from '../services/services';
 
-const Modal = ({ onOkAction }: IModal): JSX.Element => {
+const Alert = (): JSX.Element => {
 
   const { ui, setUi } = useStore();
   const { modal: { show: showModal } } = ui
   const cancelButtonRef = useRef(null)
+  const { todos, setTodos, selectedTodo } = useStore();
+  const userDeleteMutation = useCustomMutation<IResponsePostPutDelete<Todo>, Partial<Todo>>('deleteTodo', deleteTodo);
 
   const onOk = () => {
-    onOkAction()
-    setUi({ modal: { show: false } })
+    userDeleteMutation.mutate({
+      _id: selectedTodo
+    }, {
+      onSuccess: (data) => {
+        if(data.success) {
+          const itemsMapped = todos.filter(i => i._id !== selectedTodo)
+          setTodos(itemsMapped)
+          setUi({ modal: { show: false } })
+        }
+      }
+    })
   }
 
   const onCancel = () => {
@@ -67,10 +81,11 @@ const Modal = ({ onOkAction }: IModal): JSX.Element => {
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm flex items-center"
                   onClick={onOk}
                 >
                   Borrar
+                  { userDeleteMutation.isLoading && <RefreshIconOutline className="animate-spin h-6 w-6" aria-hidden="true"/>}
                 </button>
                 <button
                   type="button"
@@ -89,4 +104,4 @@ const Modal = ({ onOkAction }: IModal): JSX.Element => {
   );
 }
 
-export default Modal;
+export default Alert;

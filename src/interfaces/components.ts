@@ -8,8 +8,12 @@ export interface ITodoItem {
   todoItem: Todo
 }
 
-export interface IResponse<T> {
-  success?: boolean
+export interface IResponseGet<T> {
   count: number
   data: T[]
+}
+
+export interface IResponsePostPutDelete<T> {
+  success?: boolean
+  data: T
 }
