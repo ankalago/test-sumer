@@ -34,18 +34,25 @@ const Todos = (): JSX.Element => {
     <div className="bg-gray-100 py-8 h-screen">
       <div className="max-w-xl mx-auto px-4">
         <div className="flex mb-4 gap-2">
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className={classNames(
-              showError && !todo ? 'border-rose-500' : 'border-gray-100',
-              "border-2 shadow-sm focus:ring-indigo-500 focus:border-blue-400 block w-full sm:text-sm p-3 rounded-full"
-            )}
-            placeholder="todo"
-            onChange={(e) => handleTodo(e)}
-            value={todo}
-          />
+          <div className="mt-1 relative flex items-center w-full">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              className={classNames(
+                showError && !todo ? 'border-rose-500' : 'border-gray-100',
+                "border-2 shadow-sm focus:ring-indigo-500 focus:border-blue-400 block w-full sm:text-sm p-3 rounded-full"
+              )}
+              placeholder="todo"
+              onChange={(e) => handleTodo(e)}
+              value={todo}
+            />
+            <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+              <kbd className="inline-flex items-center border border-gray-200 rounded-full px-3 text-sm font-sans font-medium text-gray-400 bg-white text-xl">
+                ↵
+              </kbd>
+            </div>
+          </div>
           <button
             type="button"
             className="inline-flex items-center p-3 border border-transparent rounded-full shadow-sm text-white bg-gray-300 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 border border-gray-100"

@@ -1,4 +1,10 @@
-# Getting Started with Create React App
+# Test Sumer
+
+## Paul Jacome - Quito - Ecuador
+
+**[Linkedin Profile](https://www.linkedin.com/in/pauljacome/)**
+
+![Product_Png](https://raw.githubusercontent.com/ankalago/test-sumer/master/public/screen-shot.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
