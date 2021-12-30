@@ -10,9 +10,8 @@ export const deleteTodo = async (data: Partial<Todo>) =>
 export const addNewTodo = async (data: Partial<Todo>) =>
   await apiPost<AxiosRequestConfig, Partial<Todo>>(`/task`, data, options);
 
-export async function updateTodo(data: Partial<Todo>) {
-  return await apiPut<AxiosRequestConfig, Partial<Todo>>(`/task/${data._id}`, { completed: data.completed }, options);
-}
+export const updateTodo = async (data: Partial<Todo>) =>
+  await apiPut<AxiosRequestConfig, Partial<Todo>>(`/task/${data._id}`, { completed: data.completed }, options);
 
 export const getTodos = async () =>
   await apiGet<AxiosRequestConfig, Todo>(`/task`, options);
